@@ -4,3 +4,5 @@
 /.idea/inspectionProfiles/profiles_settings.xml
 /.idea/ScheduleReminder.iml
 /.idea/vcs.xml
+/.vscode/*
+/env/*
