@@ -1,9 +1,18 @@
 # ScheduleReminder
-Telegram Bot which notify every day about lesson schedule
+Telegram Bot which notify every day about lesson schedule.
 
----
+### Architecture
 
-How to setup environment 
+![image](https://user-images.githubusercontent.com/45717260/156068483-24ad551a-0cc5-4bb8-9a53-bf01a909fd41.png)
+
+### Links
+
+* web page with xlsx: https://kpfu.ru/computing-technology/raspisanie 
+* xpath to xlsx in web page: //*[@id="ss_content"]/div[2]/div/div/div[1]/div/div[2]/div/p[1]/a
+* Jira task board: https://schedulebot.atlassian.net/jira/software/projects/SR/boards/1
+* Confluence: https://schedulebot.atlassian.net/wiki/spaces/~799618195/pages/33109/Home
+
+### How to setup environment 
 
 Lunux:
 
@@ -20,8 +29,4 @@ Windows:
 For deactivate the Python venv:
 
     deactivate
-
-* web page with xlsx: https://kpfu.ru/computing-technology/raspisanie 
-* xpath to xlsx in web page: //*[@id="ss_content"]/div[2]/div/div/div[1]/div/div[2]/div/p[1]/a
-* Jira task board: https://schedulebot.atlassian.net/jira/software/projects/SR/boards/1
-* Confluence: https://schedulebot.atlassian.net/wiki/spaces/~799618195/pages/33109/Home
+    
