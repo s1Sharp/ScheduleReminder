@@ -7,7 +7,7 @@ book = openpyxl.open(xlsx_env.timetable, read_only=True)
 
 sheet = book.active
 
-def parse_day():
+def parse_time_idx():
      dict_l=dict()
      for j in range(sheet.min_column-1, sheet.max_column):
           for i in range(sheet.min_row-1,sheet.max_row):
@@ -40,18 +40,7 @@ def parse_group_idx():
                     dict_l[sheet[i][group_idx].value] = group_idx
                     return dict_l
 
-def parse_time():
-     time_list = []
-     for row in range(33, 46, 2):
-          time_list.append(sheet[row][1].value)
-     return time_list
-
-def parse_groups():
-     groups = []
-     for column in range(2,sheet.max_column):
-          groups.append(sheet[32][column].value)
-     return groups
 
 if __name__ == "__main__":
      print(parse_group_idx())
-     print(parse_day())
+     print(parse_time_idx())
