@@ -29,4 +29,7 @@ Windows:
 For deactivate the Python venv:
 
     deactivate
-    
+
+### Update requirements
+
+    pip freeze > requirements.txt
