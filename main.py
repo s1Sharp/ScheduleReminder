@@ -1,6 +1,7 @@
 from aiogram.utils import executor
 
 from bot import dp
+import handlers
 from fetch_xlsx import wget_excel
 
 
