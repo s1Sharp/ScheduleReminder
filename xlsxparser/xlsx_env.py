@@ -1,4 +1,4 @@
-timetable = "../xlsxfolder/timetable.xlsx"
+XLSX_SCHEDULE_PATH = "../data/schedule.xlsx"
 
 dtime = [" 8.30-10.00",
          "10.10-11.40",

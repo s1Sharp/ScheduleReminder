@@ -1,9 +1,7 @@
 import openpyxl
-import enum
-import re
 import xlsx_env
 
-book = openpyxl.open(xlsx_env.timetable, read_only=True)
+book = openpyxl.open(xlsx_env.XLSX_SCHEDULE_PATH, read_only=True)
 
 sheet = book.active
 
