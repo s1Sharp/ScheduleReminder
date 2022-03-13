@@ -1,13 +1,14 @@
 from pymongo import MongoClient
 
-db_ip               = "localhost"
-db_port             = 27017
-db_name             = 'timetable_db'
-time_collection     = 'time'
-groups_collection   = 'groups'
-subs_collection     = 'subscriptions'
+db_ip = "localhost"
+db_port = 27017
+db_name = 'timetable_db'
+time_collection = 'time'
+groups_collection = 'groups'
+subs_collection = 'subscriptions'
 
 invalid_returned_id = -1
+
 
 class MongodbService(object):
     _instance = None
@@ -28,21 +29,21 @@ class MongodbService(object):
     def get_data(self, colname):
         return list(self._db[str(colname)].find())
 
-    def save_data_time(self, data) -> integer:
+    def save_data_time(self, data):
         try:
             return self._db[time_collection].insert_one(data).inserted_id
         except Exception as e:
             print(e)
             return invalid_returned_id
 
-    def save_data_groups(self, data) -> integer:
+    def save_data_groups(self, data):
         try:
             return self._db[groups_collection].insert_one(data).inserted_id
         except Exception as e:
             print(e)
             return invalid_returned_id
 
-    def save_data_subs(self, data) -> integer:
+    def save_data_subs(self, data):
         try:
             return self._db[subs_collection].insert_one(data).inserted_id
         except Exception as e:
