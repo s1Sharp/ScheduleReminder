@@ -8,3 +8,4 @@
 /env/*
 */__pycache__/*
 /data/schedule.xlsx
+/bot.log

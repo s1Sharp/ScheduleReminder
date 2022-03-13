@@ -18,8 +18,7 @@ def get_html_with_engine(url):
     try:
         driver.get(url)
         html = driver.page_source
-    except:
-        print(f"{url} did not respond...")
+    except Exception:
         return None
     finally:
         driver.quit()
