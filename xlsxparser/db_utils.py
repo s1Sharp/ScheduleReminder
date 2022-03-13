@@ -2,10 +2,10 @@ from pymongo import MongoClient
 
 db_ip = "localhost"
 db_port = 27017
-db_name = 'timetable_db'
-time_collection = 'time'
-groups_collection = 'groups'
-subs_collection = 'subscriptions'
+db_name = "timetable_db"
+time_collection = "time"
+groups_collection = "groups"
+subs_collection = "subscriptions"
 
 invalid_returned_id = -1
 

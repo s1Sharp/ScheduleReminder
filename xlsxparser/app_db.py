@@ -5,7 +5,7 @@ storage = MongodbService.get_instance()
 
 if __name__ == "__main__":
     user_id = 913145924
-    gr = ['09-811', '09-812']
+    gr = ["09-811", "09-812"]
     data_subs = {user_id: [gr]}
     if storage.save_data_subs(data_subs) != invalid_returned_id:
         print("Data groups were successfully saved")

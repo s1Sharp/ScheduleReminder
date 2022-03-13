@@ -16,9 +16,9 @@ def parse_time_idx():
                 dict_l[day] = []
                 while sheet[time_idx][j + 1].value != xlsx_env.dtime[-1]:
                     if sheet[time_idx][j + 1].value in xlsx_env.dtime:
-                        dict_l[day].append({str(sheet[time_idx][j + 1].value).replace(' ', ''): time_idx})
+                        dict_l[day].append({str(sheet[time_idx][j + 1].value).replace(" ", ""): time_idx})
                     time_idx += 1
-                dict_l[day].append({str(sheet[time_idx][j + 1].value).replace(' ', ''): time_idx})
+                dict_l[day].append({str(sheet[time_idx][j + 1].value).replace(" ", ""): time_idx})
                 if sheet[time_idx][j + 1].value == xlsx_env.dtime[-1] and day == list(xlsx_env.dday.keys())[-1]:
                     print(dict_l)
                     return dict_l

@@ -7,3 +7,4 @@
 /.vscode/*
 /env/*
 */__pycache__/*
+/data/schedule.xlsx
