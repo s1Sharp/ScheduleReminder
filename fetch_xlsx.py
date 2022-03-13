@@ -1,10 +1,10 @@
-import os
 import requests
 from selenium import webdriver
 import bs4
 import wget
+import logging
 
-from config import SCHEDULE_URL, SCHEDULE_PATH, GECKODRIVER_PATH
+from config import SCHEDULE_URL, GECKODRIVER_PATH
 
 
 def get_html(url):
@@ -18,8 +18,9 @@ def get_html_with_engine(url):
     try:
         driver.get(url)
         html = driver.page_source
-    except Exception:
-        return None
+    except Exception as e:
+        logging.info(str(e))
+        return
     finally:
         driver.quit()
     return html
@@ -35,7 +36,9 @@ def get_link_to_file(url):
     return a.get("href")
 
 
-def wget_excel():
-    url = get_link_to_file(SCHEDULE_URL)
-    os.remove(SCHEDULE_PATH)
-    wget.download(url, out=SCHEDULE_PATH)
+def wget_excel(path):
+    try:
+        url = get_link_to_file(SCHEDULE_URL)
+        wget.download(url, out=path)
+    except Exception as e:
+        logging.info(str(e))
