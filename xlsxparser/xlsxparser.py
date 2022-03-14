@@ -7,6 +7,21 @@ book = openpyxl.open(xlsx_env.XLSX_SCHEDULE_PATH, read_only=True)
 
 sheet = book.active
 
+def get_merged_cell_value(sht, cell):
+     """
+     Check whether it is a merged cell and get the value of the corresponding row and column cell.
+     If it is a merged cell, take the value of the cell in the upper left corner of the merged area as the value of the current cell; otherwise, directly return the value of the cell
+     : param sht: current sheet object
+     : param cell: current cell
+     :return: value from merged cell
+     """
+     if isinstance(cell, MergedCell): # judge whether the cell is a merged cell
+          for merged_range in sht.merged_cells.ranges: # loop to find the merge range to which the cell belongs
+               if cell.coordinate in merged_range:
+                    #Gets the cell in the upper left corner of the merge range and returns it as the value of the cell
+                    cell = sht.cell(row=merged_range.min_row, column=merged_range.min_col)
+                    break
+     return cell.value
 
 def parse_time_idx():
     dict_l = dict()
