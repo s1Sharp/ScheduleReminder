@@ -4,9 +4,11 @@ from aiogram import types
 from bot import dp
 from keyboards import get_cur_sched_button_name
 from states import MainForm
+from xlsxparser import xlsxparser
 
 
 @dp.message_handler(lambda message: message.text == get_cur_sched_button_name,
+                    state="*",
                     content_types=types.ContentTypes.TEXT)
 async def cmd_get_curr_sched(message: types.Message):
     await MainForm.get_schedule.set()
@@ -22,7 +24,9 @@ def is_valid_group_number(group_number):
                     content_types=types.ContentTypes.TEXT)
 async def cmd_get_curr_sched(message: types.Message):
     await MainForm.menu.set()
-    await message.answer("ваше расписание")
+    group_number = message.text
+    schedule = xlsxparser.storage.get_data_by_group_key(group_number)
+    await message.answer(schedule)
 
 
 @dp.message_handler(lambda message: not is_valid_group_number(message.text),

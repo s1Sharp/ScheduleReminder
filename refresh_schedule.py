@@ -4,6 +4,7 @@ from time import sleep
 from threading import Thread
 import logging
 import hashlib
+from pathlib import Path
 
 from fetch_xlsx import wget_excel
 from config import SCHEDULE_PATH, NEW_SCHEDULE_PATH
@@ -37,16 +38,9 @@ def is_schedule_updated():
     return old_hash != new_hash
 
 
-def is_sched_file_exist():
-    try:
-        with open(SCHEDULE_PATH):
-            return True
-    except IOError:
-        return False
-
-
 def refresh_schedule(frequency_time):
-    if not is_sched_file_exist:
+    file = Path(SCHEDULE_PATH)
+    if not file.is_file():
         wget_excel(SCHEDULE_PATH)
         sleep(random.uniform(5, 10))
     while True:
