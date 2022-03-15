@@ -9,3 +9,4 @@
 */__pycache__/*
 /data/schedule.xlsx
 /bot.log
+*__pycache__*
