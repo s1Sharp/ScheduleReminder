@@ -26,7 +26,7 @@ async def cmd_get_curr_sched(message: types.Message):
     await MainForm.menu.set()
     group_number = message.text
     schedule = xlsxparser.storage.get_data_by_group_key(group_number)
-    await message.answer(schedule)
+    await message.answer(schedule, parse_mode='html')
 
 
 @dp.message_handler(lambda message: not is_valid_group_number(message.text),
