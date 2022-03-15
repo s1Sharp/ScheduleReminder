@@ -23,6 +23,9 @@ def update_schedule_db():
         logging.error("update schedule db failed") 
 
 
+storage = MongodbService.get_instance()
+
+
 def get_merged_cell_value(sht, cell):
     """
     Check whether it is a merged cell and get the value of the corresponding row and column cell.
@@ -97,7 +100,29 @@ def parse_current_schedule(book, sheet):
         result.append({'group_key':group_key, 'day_str':day_str})
     return result
 
+def parse_current_schedule(group_idx=None, time_idx=None):
+    group_idx = parse_group_idx()
+    time_idx = parse_time_idx()
 
+    result = []
+    result_str = ""
+    format_day_str = "**{day_s}:**\n{time_s}\n"
+    format_time_str = "**{time_s}:** \t__{classwork}__\n"
+    for group_key, group_value in group_idx.items():
+        col = group_value
+        day_str = f"**Расписание для группы {group_key}:**\n\n"
+        for day_key, day_times in time_idx.items():
+            time_str = ""
+            for time in day_times:
+                for time_key, time_row in time.items():
+                    tmp = str(get_merged_cell_value(sheet, sheet[time_row][col]))
+                    if tmp != None and len(tmp) > min_len_classwork:
+                        time_str += format_time_str.format(time_s=time_key, classwork=tmp)
+            if time_str != None and time_str != "":
+                day_str += format_day_str.format(day_s=day_key, time_s=time_str)
+        result.append({'group_key': group_key, 'day_str': day_str})
+        print(day_str)
+    return result
 
 
 if __name__ == "__main__":

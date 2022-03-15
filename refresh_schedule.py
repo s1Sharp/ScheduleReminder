@@ -4,6 +4,7 @@ from time import sleep
 from threading import Thread
 import logging
 import hashlib
+from pathlib import Path
 
 from xlsxparser.xlsxparser import update_schedule_db
 from fetch_xlsx import wget_excel
@@ -39,8 +40,10 @@ def is_schedule_updated():
 
 
 def refresh_schedule(frequency_time):
-    wget_excel(SCHEDULE_PATH)
-    sleep(random.uniform(5, 20))
+    file = Path(SCHEDULE_PATH)
+    if not file.is_file():
+        wget_excel(SCHEDULE_PATH)
+        sleep(random.uniform(5, 10))
     while True:
         updated = is_schedule_updated()
         if updated:
