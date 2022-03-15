@@ -65,7 +65,7 @@ class MongodbService(object):
     def get_data_by_group_key(self, group_key, group_sub_key=1) -> str:
         try:
             request = f"{group_key} ({group_sub_key})".format(group_key=group_key, group_sub_key=group_sub_key)
-            db_ret = self._db[schedule_collection].find_one({'group_key': group_key})
+            db_ret = self._db[schedule_collection].find_one({'group_key': request})
             day_string = None
             if db_ret != None:
                 day_string = db_ret['day_str']
