@@ -43,6 +43,8 @@ def refresh_schedule(frequency_time):
     file = Path(SCHEDULE_PATH)
     if not file.is_file():
         wget_excel(SCHEDULE_PATH)
+        update_schedule_db()
+        logging.info("schedule updated")
         sleep(random.uniform(5, 10))
     while True:
         updated = is_schedule_updated()
@@ -58,7 +60,6 @@ def refresh_schedule(frequency_time):
             # TODO: mutex for SCHEDULE_PATH
             update_schedule_db()
             logging.info("schedule updated")
-            
         else:
             logging.info("schedule not updated")
             try:
