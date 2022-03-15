@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+import logging
 
 db_ip               = "localhost"
 db_port             = 27017
@@ -55,16 +56,21 @@ class MongodbService(object):
         try:
             self._db[schedule_collection].delete_many({})
             self._db[schedule_collection].insert_many(data)
+            logging.info("db collection schedule updated successfully")
             return True
         except Exception as e:
-            print(e)
+            logging.error(f"db save_data_schedule error: {e}")
             return False
             
-    def get_data_by_group_key(self, group_key) -> str:
+    def get_data_by_group_key(self, group_key, group_sub_key=1) -> str:
         try:
+            request = f"{group_key} ({group_sub_key})".format(group_key=group_key, group_sub_key=group_sub_key)
             db_ret = self._db[schedule_collection].find_one({'group_key': group_key})
-            day_string = db_ret['day_str']
+            day_string = None
+            if db_ret != None:
+                day_string = db_ret['day_str']
+            logging.info("db collect schedule by group key successfully")
             return day_string
         except Exception as e:
-            print(e)
+            logging.error(f"db get_data_by_group_key error: {e}")
             return ''
