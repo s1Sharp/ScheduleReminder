@@ -5,6 +5,7 @@ from threading import Thread
 import logging
 import hashlib
 
+from xlsxparser.xlsxparser import update_schedule_db
 from fetch_xlsx import wget_excel
 from config import SCHEDULE_PATH, NEW_SCHEDULE_PATH
 
@@ -43,13 +44,18 @@ def refresh_schedule(frequency_time):
     while True:
         updated = is_schedule_updated()
         if updated:
-            logging.info("schedule updated")
+            logging.info("schedule updating")
             try:
-                os.remove(SCHEDULE_PATH)
+                file = os.path.join(SCHEDULE_PATH)
+                os.remove(file)
                 os.rename(NEW_SCHEDULE_PATH, SCHEDULE_PATH)
             except FileNotFoundError as e:
                 logging.info(str(e))
-            # TODO update DB here
+            # update DB here
+            # TODO: mutex for SCHEDULE_PATH
+            update_schedule_db()
+            logging.info("schedule updated")
+            
         else:
             logging.info("schedule not updated")
             try:
