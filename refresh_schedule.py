@@ -42,26 +42,28 @@ def is_schedule_updated():
 def refresh_schedule(frequency_time):
     file = Path(SCHEDULE_PATH)
     if not file.is_file():
+        logging.info("wget excel")
         wget_excel(SCHEDULE_PATH)
+        logging.info("updating db")
         update_schedule_db()
-        logging.info("schedule updated")
+        logging.info("db updated")
         sleep(random.uniform(5, 10))
     while True:
+        logging.info("wget excel")
         updated = is_schedule_updated()
         if updated:
-            logging.info("schedule updating")
             try:
                 file = os.path.join(SCHEDULE_PATH)
                 os.remove(file)
                 os.rename(NEW_SCHEDULE_PATH, SCHEDULE_PATH)
             except FileNotFoundError as e:
                 logging.info(str(e))
-            # update DB here
             # TODO: mutex for SCHEDULE_PATH
+            logging.info("updating db")
             update_schedule_db()
-            logging.info("schedule updated")
+            logging.info("db updated")
         else:
-            logging.info("schedule not updated")
+            logging.info("current xlsx is fresh, db is up to date")
             try:
                 os.remove(NEW_SCHEDULE_PATH)
             except FileNotFoundError as e:
