@@ -37,9 +37,18 @@ def is_schedule_updated():
     return old_hash != new_hash
 
 
+def is_sched_file_exist():
+    try:
+        with open(SCHEDULE_PATH):
+            return True
+    except IOError:
+        return False
+
+
 def refresh_schedule(frequency_time):
-    wget_excel(SCHEDULE_PATH)
-    sleep(random.uniform(5, 20))
+    if not is_sched_file_exist:
+        wget_excel(SCHEDULE_PATH)
+        sleep(random.uniform(5, 10))
     while True:
         updated = is_schedule_updated()
         if updated:
