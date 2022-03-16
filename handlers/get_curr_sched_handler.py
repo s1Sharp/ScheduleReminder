@@ -48,5 +48,5 @@ async def cmd_get_curr_sched(message: types.Message):
                     state=[MainForm.set_subgroup],
                     content_types=types.ContentTypes.TEXT)
 async def cmd_incorrect_group_number(message: types.Message):
-    await MainForm.set_subgroup.finish()
-    await message.reply("формат номер группы некорректен, требуется следующий формат xx-xxx", reply_markup=main_menu_keyboard)
+    await MainForm.menu.set()
+    await message.reply("номер группы некорректен, требуется следующий формат xx-xxx", reply_markup=main_menu_keyboard)
