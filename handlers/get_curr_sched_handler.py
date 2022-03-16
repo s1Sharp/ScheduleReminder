@@ -9,12 +9,14 @@ from xlsxparser import xlsx_env
 
 INVALID_TEXT = ['\n', '', None]
 
+
 @dp.message_handler(lambda message: message.text == get_cur_sched_button_name,
                     state="*",
                     content_types=types.ContentTypes.TEXT)
 async def cmd_get_curr_sched(message: types.Message):
     await MainForm.set_subgroup.set()
-    await message.answer("введите номер группы",reply_markup=types.ReplyKeyboardRemove())
+    await message.answer("введите номер группы", reply_markup=types.ReplyKeyboardRemove())
+
 
 @dp.message_handler(lambda message: is_valid_group_number(message.text),
                     state=[MainForm.set_subgroup],
@@ -25,9 +27,11 @@ async def cmd_get_curr_sched(message: types.Message):
     await state.update_data(group_number=message.text)
     await message.answer("введите номер подгруппы", reply_markup=set_subgroup_keyboard)
 
+
 def is_valid_group_number(group_number):
     fixed_groups = [elem.split(' ')[0] for elem in xlsx_env.dgroup]
     return re.match(r"^\d{2}-\d{3}$", group_number) and (group_number in fixed_groups)
+
 
 @dp.message_handler(state=[MainForm.get_schedule],
                     content_types=types.ContentTypes.TEXT)
@@ -41,7 +45,6 @@ async def cmd_get_curr_sched(message: types.Message):
     for text in schedule:
         if text not in INVALID_TEXT:
             await message.answer(text, parse_mode='html', reply_markup=main_menu_keyboard)
-        
 
 
 @dp.message_handler(lambda message: not is_valid_group_number(message.text),
@@ -49,4 +52,5 @@ async def cmd_get_curr_sched(message: types.Message):
                     content_types=types.ContentTypes.TEXT)
 async def cmd_incorrect_group_number(message: types.Message):
     await MainForm.menu.set()
-    await message.reply("номер группы некорректен, требуется следующий формат\n <b>xx-xxx</b>", parse_mode='html', reply_markup=main_menu_keyboard)
+    await message.reply("номер группы некорректен, требуется следующий формат\n <b>xx-xxx</b>", parse_mode='html',
+                        reply_markup=main_menu_keyboard)
