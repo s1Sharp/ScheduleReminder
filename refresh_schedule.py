@@ -6,7 +6,7 @@ import logging
 import hashlib
 from pathlib import Path
 
-from xlsxparser.xlsxparser import update_schedule_db
+from xlsxparser.xlsx_parser import update_schedule_db
 from fetch_xlsx import wget_excel
 from config import SCHEDULE_PATH, NEW_SCHEDULE_PATH
 
