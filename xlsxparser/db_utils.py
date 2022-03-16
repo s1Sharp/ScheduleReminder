@@ -28,6 +28,14 @@ class MongodbService(object):
         self._client = MongoClient(db_ip, db_port)
         self._db = self._client[db_name]
 
+    def check_connection(self) -> bool:
+        try:
+            self._client.server_info() # will throw an exception if not started
+            return True
+        except Exception as e:
+            logging.error(f"db connection failed {e}") 
+            return False
+
     def get_data(self, colname):
         return list(self._db[str(colname)].find())
 

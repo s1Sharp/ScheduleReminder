@@ -1,5 +1,7 @@
 XLSX_SCHEDULE_PATH = "data/schedule.xlsx"
 
+KEY_WORD_NEXT_DAY = 'KEY_WORD_NEXT_DAY'
+
 dtime = [" 8.30-10.00",
          "10.10-11.40",
          "11.50-13.20",
