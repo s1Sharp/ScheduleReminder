@@ -36,10 +36,13 @@ async def cmd_get_curr_sched(message: types.Message):
     data = await state.get_data()
     subgroup_number = message.text
     schedule = xlsx_parser.storage.get_data_by_group_key(data['group_number'], subgroup_number)
-    schedule = schedule.split(xlsx_env.KEY_WORD_NEXT_DAY)
-    for text in schedule:
-        if text not in INVALID_TEXT:
-            await message.answer(text, parse_mode='html', reply_markup=main_menu_keyboard)
+    if schedule is not None:
+        schedule = schedule.split(xlsx_env.KEY_WORD_NEXT_DAY)
+        for text in schedule:
+            if text not in INVALID_TEXT:
+                await message.answer(text, parse_mode='html', reply_markup=main_menu_keyboard)
+    else:
+        await message.answer("произошел сбой в базе данных, извиняемся за неудобства")
 
 
 @dp.message_handler(lambda message: not is_valid_group_number(message.text),
