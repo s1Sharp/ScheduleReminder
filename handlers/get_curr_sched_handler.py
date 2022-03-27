@@ -42,7 +42,7 @@ async def cmd_get_curr_sched(message: types.Message):
             if text not in INVALID_TEXT:
                 await message.answer(text, parse_mode='html', reply_markup=main_menu_keyboard)
     else:
-        await message.answer("произошел сбой в базе данных, извиняемся за неудобства")
+        await message.answer("произошел сбой в базе данных, извиняемся за неудобства", reply_markup=main_menu_keyboard)
 
 
 @dp.message_handler(lambda message: not is_valid_group_number(message.text),
