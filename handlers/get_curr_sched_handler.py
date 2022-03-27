@@ -1,4 +1,3 @@
-import re
 from aiogram import types
 
 from bot import dp
@@ -6,6 +5,7 @@ from keyboards import get_cur_sched_button_name, main_menu_keyboard, set_subgrou
 from states import MainForm
 from xlsxparser import xlsx_parser
 from xlsxparser import xlsx_env
+from handlers.handler_utils import is_valid_group_number
 
 INVALID_TEXT = ['\n', '', None]
 
@@ -28,19 +28,14 @@ async def cmd_get_curr_sched(message: types.Message):
     await message.answer("введите номер подгруппы", reply_markup=set_subgroup_keyboard)
 
 
-def is_valid_group_number(group_number):
-    fixed_groups = [elem.split(' ')[0] for elem in xlsx_env.dgroup]
-    return re.match(r"^\d{2}-\d{3}$", group_number) and (group_number in fixed_groups)
-
-
 @dp.message_handler(state=[MainForm.get_schedule],
                     content_types=types.ContentTypes.TEXT)
 async def cmd_get_curr_sched(message: types.Message):
     await MainForm.menu.set()
     state = dp.get_current().current_state()
-    group_number = await state.get_data()
+    data = await state.get_data()
     subgroup_number = message.text
-    schedule = xlsx_parser.storage.get_data_by_group_key(group_number['group_number'], subgroup_number)
+    schedule = xlsx_parser.storage.get_data_by_group_key(data['group_number'], subgroup_number)
     schedule = schedule.split(xlsx_env.KEY_WORD_NEXT_DAY)
     for text in schedule:
         if text not in INVALID_TEXT:
