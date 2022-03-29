@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+from xlsx_env import KEY_WORD_NEXT_DAY
 import logging
 
 db_ip               = "localhost"
@@ -53,12 +54,40 @@ class MongodbService(object):
             print(e)
             return invalid_returned_id
 
-    def save_data_subs(self, data) -> int:
+    def data_subscriptions(self, group_key, tg_id, time=None, action=None) -> None:
+        permited_actions = ['add', 'remove']
+        if action in permited_actions:
+            try:
+                if action == 'add' and time != None:
+                    doc = self._db[subs_collection].find_one( {"_id": group_key} )
+                    if doc == None:
+                        self._db[subs_collection].insert_one({ '_id': group_key ,'subs': { tg_id:time } })
+                        return
+                    subs = doc['subs']
+                    subs[tg_id] = time
+                    self._db[subs_collection].update_one({ '_id': group_key } , {'$set': { 'subs': subs}})
+                    return
+                if action == 'remove':
+                    doc = self._db[subs_collection].find_one( {"_id": group_key} )
+                    if doc == None:
+                        return
+                    subs = doc['subs']
+                    subs.pop(tg_id, None)
+                    self._db[subs_collection].update_one({ '_id': group_key } , {'$set': { 'subs': subs}})
+                    return
+            except Exception as e:
+                print(e)
+                return invalid_returned_id
+
+    def get_subscriptions(self):
         try:
-            return self._db[subs_collection].insert_one(data).inserted_id
+            doc = self._db[subs_collection].find()
+            subs = list(doc)
+            for group in subs.keys():
         except Exception as e:
             print(e)
-            return invalid_returned_id
+            return 
+        return next_time
 
     def save_data_schedule(self, data) -> bool:
         try:
@@ -70,7 +99,7 @@ class MongodbService(object):
             logging.error(f"db save_data_schedule error: {e}")
             return False
             
-    def get_data_by_group_key(self, group_key, group_sub_key=1) -> str:
+    def get_data_by_group_key(self, group_key, group_sub_key=1):
         try:
             request = f"{group_key} ({group_sub_key})".format(group_key=group_key, group_sub_key=group_sub_key)
             db_ret = self._db[schedule_collection].find_one({'group_key': request})
@@ -78,7 +107,21 @@ class MongodbService(object):
             if db_ret != None:
                 day_string = db_ret['day_str']
             logging.info("db collect schedule by group key successfully")
-            return day_string
+            day_strings = day_string.split(KEY_WORD_NEXT_DAY)
+            return day_strings
         except Exception as e:
             logging.error(f"db get_data_by_group_key error: {e}")
-            return ''
+            return ['Parse schedule error']
+
+
+if __name__ == "__main__":
+    storage = MongodbService.get_instance()
+    storage.data_subscriptions(group_key='09-811',tg_id='11111',time='10:00',action='add')
+    storage.data_subscriptions(group_key='09-811',tg_id='22222',time='10:00',action='add')
+    storage.data_subscriptions(group_key='09-811',tg_id='22222',action='remove')
+    storage.data_subscriptions(group_key='09-811',tg_id='00000',action='remove')
+    storage.data_subscriptions(group_key='09-822',tg_id='11111',time='12:00',action='add')
+    storage.data_subscriptions(group_key='09-822',tg_id='11111',action='remove')
+    storage.data_subscriptions(group_key='09-811',tg_id='22222',time='13:00',action='add')
+    storage.data_subscriptions(group_key='09-811',tg_id='22222',time='23:00',action='add')
+    storage.get_minimal_time('9:30')

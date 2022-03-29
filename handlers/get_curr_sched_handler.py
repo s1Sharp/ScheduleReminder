@@ -37,7 +37,6 @@ async def cmd_get_curr_sched(message: types.Message):
     group_number = await state.get_data()
     subgroup_number = message.text
     schedule = xlsx_parser.storage.get_data_by_group_key(group_number['group_number'], subgroup_number)
-    schedule = schedule.split(xlsx_env.KEY_WORD_NEXT_DAY)
     for text in schedule:
         if text not in INVALID_TEXT:
             await message.answer(text, parse_mode='html', reply_markup=main_menu_keyboard)
