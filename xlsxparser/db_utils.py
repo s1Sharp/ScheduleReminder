@@ -80,14 +80,17 @@ class MongodbService(object):
                 return invalid_returned_id
 
     def get_subscriptions(self):
+        result = []
         try:
             doc = self._db[subs_collection].find()
             subs = list(doc)
-            for group in subs.keys():
+            for sub in subs:
+                for tg_id in sub['subs'].keys():
+                    result.append( (sub['subs'][tg_id], tg_id, sub['_id']) )
+            return result
         except Exception as e:
             print(e)
-            return 
-        return next_time
+            return
 
     def save_data_schedule(self, data) -> bool:
         try:
@@ -124,4 +127,5 @@ if __name__ == "__main__":
     storage.data_subscriptions(group_key='09-822',tg_id='11111',action='remove')
     storage.data_subscriptions(group_key='09-811',tg_id='22222',time='13:00',action='add')
     storage.data_subscriptions(group_key='09-811',tg_id='22222',time='23:00',action='add')
-    storage.get_minimal_time('9:30')
+    x = storage.get_subscriptions()
+    g=2
