@@ -1,5 +1,5 @@
 from aiogram import types
-
+from xlsxparser import xlsx_parser
 from bot import dp
 from keyboards import main_menu_keyboard, sub_to_sched_button_name
 from states import MainForm
@@ -49,8 +49,8 @@ async def cmd_sub_to_sched(message: types.Message):
     group_number = data['group_number']
     time = message.text
 
-    # TODO fetch db subs, update timer
-
+    xlsx_parser.storage.data_subscriptions(group_key=group_number, tg_id=str(message.chat.id), time=time,
+                                           action='add')
     await message.answer(f"подписка активирована, рассылка расписания будет происходит каждый день в {time}",
                          reply_markup=main_menu_keyboard)
 

@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from xlsx_env import KEY_WORD_NEXT_DAY
+from xlsxparser.xlsx_env import KEY_WORD_NEXT_DAY
 import logging
 
 db_ip               = "localhost"

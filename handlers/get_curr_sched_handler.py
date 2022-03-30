@@ -4,10 +4,7 @@ from bot import dp
 from keyboards import get_cur_sched_button_name, main_menu_keyboard, set_subgroup_keyboard
 from states import MainForm
 from xlsxparser import xlsx_parser
-from xlsxparser import xlsx_env
 from handlers.handler_utils import is_valid_group_number, is_valid_existing_group_number
-
-INVALID_TEXT = ['\n', '', None]
 
 
 @dp.message_handler(lambda message: message.text == get_cur_sched_button_name,
@@ -38,9 +35,8 @@ async def cmd_get_curr_sched(message: types.Message):
     subgroup_number = message.text
     schedule = xlsx_parser.storage.get_data_by_group_key(data['group_number'], subgroup_number)
     if schedule is not None:
-        schedule = schedule.split(xlsx_env.KEY_WORD_NEXT_DAY)
         for text in schedule:
-            if text not in INVALID_TEXT:
+            if text not in xlsx_parser.INVALID_TEXT:
                 await message.answer(text, parse_mode='html', reply_markup=main_menu_keyboard)
     else:
         await message.answer("произошел сбой в базе данных, извиняемся за неудобства", reply_markup=main_menu_keyboard)

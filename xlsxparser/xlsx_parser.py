@@ -8,22 +8,25 @@ storage = MongodbService.get_instance()
 
 min_len_classwork = 10
 
+INVALID_TEXT = ['\n', '', None]
+
 
 def update_schedule_db():
     if storage.check_connection() == False:
-        logging.error("update schedule db failed") 
+        logging.error("update schedule db failed")
         return
-    
+
     book = openpyxl.open(xlsx_env.XLSX_SCHEDULE_PATH, read_only=True)
     sheet = book.active
 
     schedule_strings = parse_current_schedule(book, sheet)
-    
+
     book.close()
     if storage.save_data_schedule(schedule_strings) != invalid_returned_id:
-        logging.info("update schedule db successfully") 
+        logging.info("update schedule db successfully")
     else:
-        logging.error("update schedule db failed") 
+        logging.error("update schedule db failed")
+
 
 def getValueWithMergeLookup(sheet, cell):
     idx = cell.coordinate
@@ -50,6 +53,7 @@ def getValueWithMergeLookup(sheet, cell):
     # return sheet.cell(idx).value
     return sheet[idx].value
 
+
 def get_merged_cell_value(sht, cell):
     """
     Check whether it is a merged cell and get the value of the corresponding row and column cell.
@@ -58,13 +62,14 @@ def get_merged_cell_value(sht, cell):
     : param cell: current cell
     :return: value from merged cell
     """
-    if isinstance(cell, openpyxl.cell.MergedCell): # judge whether the cell is a merged cell
-        for merged_range in sht.merged_cells.ranges: # loop to find the merge range to which the cell belongs
+    if isinstance(cell, openpyxl.cell.MergedCell):  # judge whether the cell is a merged cell
+        for merged_range in sht.merged_cells.ranges:  # loop to find the merge range to which the cell belongs
             if cell.coordinate in merged_range:
-                #Gets the cell in the upper left corner of the merge range and returns it as the value of the cell
+                # Gets the cell in the upper left corner of the merge range and returns it as the value of the cell
                 cell = sht.cell(row=merged_range.min_row, column=merged_range.min_col)
                 break
     return cell.value
+
 
 def parse_time_idx(book, sheet):
     dict_l = dict()
@@ -98,11 +103,11 @@ def parse_group_idx(book, sheet):
                 dict_l[sheet[i][group_idx].value] = group_idx
                 return dict_l
 
-def parse_current_schedule(book, sheet):
 
-    logging.info("start parse group idx") 
+def parse_current_schedule(book, sheet):
+    logging.info("start parse group idx")
     group_idx = parse_group_idx(book, sheet)
-    logging.info("start parse time idx") 
+    logging.info("start parse time idx")
     time_idx = parse_time_idx(book, sheet)
 
     book.close()
@@ -110,7 +115,7 @@ def parse_current_schedule(book, sheet):
     book = openpyxl.open(xlsx_env.XLSX_SCHEDULE_PATH)
     sheet = book.active
 
-    logging.info("start parse schedule strings") 
+    logging.info("start parse schedule strings")
     result = []
     result_str = ""
     format_day_str = "<b><u>{day_s}:</u></b>\n{time_s}\n{key_word}\n"
@@ -122,12 +127,12 @@ def parse_current_schedule(book, sheet):
             time_str = ""
             for time in day_times:
                 for time_key, time_row in time.items():
-                        tmp = str(getValueWithMergeLookup(sheet, sheet[time_row][col]))
-                        if tmp != None and len(tmp) > min_len_classwork:
-                            time_str += format_time_str.format(time_s=time_key,classwork=tmp)
-            if time_str != None and time_str!="":
-                day_str += format_day_str.format(day_s=day_key,time_s=time_str,key_word=xlsx_env.KEY_WORD_NEXT_DAY)
-        result.append({'group_key':group_key, 'day_str':day_str})
+                    tmp = str(getValueWithMergeLookup(sheet, sheet[time_row][col]))
+                    if tmp != None and len(tmp) > min_len_classwork:
+                        time_str += format_time_str.format(time_s=time_key, classwork=tmp)
+            if time_str != None and time_str != "":
+                day_str += format_day_str.format(day_s=day_key, time_s=time_str, key_word=xlsx_env.KEY_WORD_NEXT_DAY)
+        result.append({'group_key': group_key, 'day_str': day_str})
     book.close()
     return result
 
