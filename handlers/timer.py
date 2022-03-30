@@ -41,3 +41,19 @@ def poll_subs():
         time.sleep(10)
 
 
+def bg_async(poll_subs):
+    def wrapper():
+        loop = asyncio.new_event_loop()
+        loop.run_until_complete(poll_subs)
+
+    threading.Thread(target=wrapper).start()
+
+
+def main_thread():
+    bg_async(poll_subs())
+
+
+def init_poll_subs_job():
+    thread = threading.Thread(target=main_thread, name="pollSubsThread")
+    thread.setDaemon(True)
+    thread.start()
