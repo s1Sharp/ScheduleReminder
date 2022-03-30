@@ -22,7 +22,7 @@ def get_nearest_subs(subs):
     return result
 
 
-def poll_subs():
+async def poll_subs():
     while True:
         subs = xlsx_parser.storage.get_subscriptions()
         nearest_subs = get_nearest_subs(subs)
@@ -32,12 +32,12 @@ def poll_subs():
             if schedule is not None:
                 for text in schedule:
                     if text not in xlsx_parser.INVALID_TEXT:
-                        loop = asyncio.new_event_loop()
-                        asyncio.set_event_loop(loop)
-                        loop.run_until_complete(bot.bot.send_message(chat_id=chat_id, text=text, parse_mode='html'))
+                        # loop = asyncio.new_event_loop()
+                        # asyncio.set_event_loop(loop)
+                        # loop.run_until_complete(bot.bot.send_message(chat_id=chat_id, text=text, parse_mode='html'))
                         # await loop.run_until_complete(bot.bot.send_message(chat_id=chat_id, text=text, parse_mode='html'))
-                        loop.close()
-                        # await bot.bot.send_message(chat_id=chat_id, text=text, parse_mode='html')
+                        # loop.close()
+                        await bot.bot.send_message(chat_id=chat_id, text=text, parse_mode='html')
         time.sleep(10)
 
 
