@@ -4,7 +4,7 @@ from bot import dp
 from keyboards import main_menu_keyboard, sub_to_sched_button_name
 from states import MainForm
 from handlers.handler_utils import is_valid_group_number, is_valid_existing_group_number, is_valid_time
-
+from bot import bot
 
 @dp.message_handler(lambda message: message.text == sub_to_sched_button_name,
                     state="*",
