@@ -122,7 +122,7 @@ def parse_current_schedule(book, sheet):
     format_time_str = "<b>{time_s}:</b> \t<i>{classwork}</i>\n"
     for group_key, group_value in group_idx.items():
         col = group_value
-        day_str = f"<strong>Расписание для группы {group_key}:</strong>\n\n"
+        day_str = ""
         for day_key, day_times in time_idx.items():
             time_str = ""
             for time in day_times:
