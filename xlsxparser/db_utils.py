@@ -64,16 +64,19 @@ class MongodbService(object):
                         self._db[subs_collection].insert_one({ '_id': tg_id ,'subs': { group_key:time } })
                         return
                     subs = doc['subs']
+                    logging.info(f"db sub before update {tg_id} in time {time} , group {group_key}")
                     subs.clear()
                     subs[group_key] = time
-                    self._db[subs_collection].update_one({ '_id': group_key } , {'$set': { 'subs': subs}})
+                    self._db[subs_collection].update_one({ '_id': tg_id } , {'$set': { 'subs': subs}})
+                    logging.info(f"db set sub {tg_id} in time {time} , group {group_key}")
                     return
                 if action == 'remove':
                     doc = self._db[subs_collection].find_one( {"_id": tg_id} )
                     if doc == None:
-                        return
+                        return False
                     self._db[subs_collection].delete_one({ '_id': tg_id })
-                    return
+                    logging.info(f"db remove sub {tg_id}")
+                    return True
             except Exception as e:
                 print(e)
                 return invalid_returned_id
