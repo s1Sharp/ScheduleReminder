@@ -59,34 +59,34 @@ class MongodbService(object):
         if action in permited_actions:
             try:
                 if action == 'add' and time != None:
-                    doc = self._db[subs_collection].find_one( {"_id": group_key} )
+                    doc = self._db[subs_collection].find_one( {"_id": tg_id} )
                     if doc == None:
-                        self._db[subs_collection].insert_one({ '_id': group_key ,'subs': { tg_id:time } })
+                        self._db[subs_collection].insert_one({ '_id': tg_id ,'subs': { group_key:time } })
                         return
                     subs = doc['subs']
-                    subs[tg_id] = time
+                    subs.clear()
+                    subs[group_key] = time
                     self._db[subs_collection].update_one({ '_id': group_key } , {'$set': { 'subs': subs}})
                     return
                 if action == 'remove':
-                    doc = self._db[subs_collection].find_one( {"_id": group_key} )
+                    doc = self._db[subs_collection].find_one( {"_id": tg_id} )
                     if doc == None:
                         return
-                    subs = doc['subs']
-                    subs.pop(tg_id, None)
-                    self._db[subs_collection].update_one({ '_id': group_key } , {'$set': { 'subs': subs}})
+                    self._db[subs_collection].delete_one({ '_id': tg_id })
                     return
             except Exception as e:
                 print(e)
                 return invalid_returned_id
 
     def get_subscriptions(self):
+        '''ret time, tg_id, group_key'''
         result = []
         try:
             doc = self._db[subs_collection].find()
             subs = list(doc)
             for sub in subs:
-                for tg_id in sub['subs'].keys():
-                    result.append( (sub['subs'][tg_id], tg_id, sub['_id']) )
+                for group_key in sub['subs'].keys():
+                    result.append( (sub['subs'][group_key], sub['_id'], group_key) )
             return result
         except Exception as e:
             print(e)
