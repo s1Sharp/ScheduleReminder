@@ -3,7 +3,11 @@ import time
 import asyncio
 import threading
 import bot
+import os
+API_TOKEN = os.environ["SR_BOT_TOKEN"]
 from xlsxparser import xlsx_parser
+import requests
+
 
 
 def get_nearest_subs(subs):
@@ -22,7 +26,7 @@ def get_nearest_subs(subs):
     return result
 
 
-async def poll_subs():
+def poll_subs():
     while True:
         subs = xlsx_parser.storage.get_subscriptions()
         nearest_subs = get_nearest_subs(subs)
@@ -32,13 +36,19 @@ async def poll_subs():
             if schedule is not None:
                 for text in schedule:
                     if text not in xlsx_parser.INVALID_TEXT:
+                        request = f"https://api.telegram.org/bot{API_TOKEN}/sendMessage?chat_id={chat_id}&text={text}&parse_mode=html"
+                        requests.post(request)
                         # loop = asyncio.new_event_loop()
                         # asyncio.set_event_loop(loop)
                         # loop.run_until_complete(bot.bot.send_message(chat_id=chat_id, text=text, parse_mode='html'))
                         # await loop.run_until_complete(bot.bot.send_message(chat_id=chat_id, text=text, parse_mode='html'))
                         # loop.close()
-                        await bot.bot.send_message(chat_id=chat_id, text=text, parse_mode='html')
-        time.sleep(10)
+                        # loop = asyncio.get_event_loop()
+                        # now = loop.time()
+                        
+                        # async with asyncio.timeout( 2.5 ):
+                        # await (bot.bot.send_message(chat_id=chat_id, text=text, parse_mode='html'), 3.5)
+        time.sleep(60)
 
 
 def bg_async(poll_subs):
