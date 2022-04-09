@@ -2,6 +2,7 @@ from aiogram import types
 from xlsxparser import xlsx_parser
 from bot import dp
 import datetime
+import logging
 from keyboards import main_menu_keyboard, sub_to_sched_button_name
 from states import MainForm
 from handlers.handler_utils import is_valid_group_number, is_valid_existing_group_number, is_valid_time
@@ -53,13 +54,9 @@ async def cmd_sub_to_sched(message: types.Message):
 
     xlsx_parser.storage.data_subscriptions(group_key=group_number, tg_id=str(message.chat.id), time=time,
                                            action='add')
+    logging.info(f"subscribe sub with tg_id {message.chat.id}, group {group_number}, time {time}")
 
-    subs = xlsx_parser.storage.get_subscriptions()
-    nearest_subs, min_hour_diff, min_minute_diff = get_nearest_subs(subs)
-
-    delta_seconds = datetime.timedelta(hours=min_hour_diff, minutes=min_minute_diff).total_seconds()
-    CUSTOM_TIMER.unset_timer()
-    CUSTOM_TIMER.set_timer(delta_seconds, nearest_subs)
+    CUSTOM_TIMER.update_timer()
 
     await message.answer(f"подписка активирована, рассылка расписания будет происходит каждый день в {time}",
                          reply_markup=main_menu_keyboard)
