@@ -37,4 +37,5 @@ For deactivate the Python venv:
 ### For deploy bot to server
 
     git clone <link to repo>
+    cd ScheduleReminder/
     sudo bash ./run_sh.sh <bot token> <db string connection>
