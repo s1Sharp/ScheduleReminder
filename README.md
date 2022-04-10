@@ -33,3 +33,8 @@ For deactivate the Python venv:
 ### Update requirements
 
     pip freeze > requirements.txt
+
+### For deploy bot to server
+
+    git clone <link to repo>
+    sudo bash ./run_sh.sh <bot token> <db string connection>
