@@ -1,6 +1,8 @@
 from pymongo import MongoClient
 from xlsxparser.xlsx_env import KEY_WORD_NEXT_DAY
+import os
 import logging
+import certifi
 
 db_ip               = "localhost"
 db_port             = 27017
@@ -26,8 +28,22 @@ class MongodbService(object):
         return cls._instance
 
     def __init__(self):
-        self._client = MongoClient(db_ip, db_port)
-        self._db = self._client[db_name]
+        try:
+            DB_STRING = os.environ["SR_DB_STRING"]
+            logging.info("connect to remote db")
+            self._client = MongoClient(DB_STRING, tlsCAFile=certifi.where())
+            self._db = self._client[db_name]
+        # default local connection,  env varialbe SR_DB_STRING is empty   
+        except KeyError as e:
+            logging.info("connect to local db")
+            self._client = MongoClient(db_ip, db_port)
+            self._db = self._client[db_name]
+        except Exception as e:
+            logging.error(e)
+            import sys
+            sys.exit("DB init error")
+            
+
 
     def check_connection(self) -> bool:
         try:
@@ -93,7 +109,7 @@ class MongodbService(object):
             return result
         except Exception as e:
             print(e)
-            return
+            return result
 
     def save_data_schedule(self, data) -> bool:
         try:
@@ -113,6 +129,8 @@ class MongodbService(object):
             if db_ret != None:
                 day_string = db_ret['day_str']
             logging.info("db collect schedule by group key successfully")
+            if day_string == None:
+                return ""
             day_strings = day_string.split(KEY_WORD_NEXT_DAY)
             return day_strings
         except Exception as e:

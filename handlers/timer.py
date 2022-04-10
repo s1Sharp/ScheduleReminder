@@ -49,6 +49,8 @@ class CustomTimer:
 
     def update_timer(self):
         subs = xlsx_parser.storage.get_subscriptions()
+        if len(subs) == 0:
+            return
         nearest_subs, min_hour_diff, min_minute_diff = get_nearest_subs(subs)
 
         delta_seconds = datetime.timedelta(hours=min_hour_diff, minutes=min_minute_diff).total_seconds() \
