@@ -4,6 +4,7 @@ import os
 import logging
 import certifi
 
+local_db_connecton_string = 'mongodb://localhost:27017/?readPreference=primary&directConnection=true&ssl=false'
 db_ip               = "localhost"
 db_port             = 27017
 db_name             = "timetable_db"
@@ -13,8 +14,6 @@ subs_collection     = "subscriptions"
 schedule_collection = "schedule"
 
 invalid_returned_id = -1
-
-
 class MongodbService(object):
     _instance = None
     _client = None
@@ -28,21 +27,14 @@ class MongodbService(object):
         return cls._instance
 
     def __init__(self):
-        try:
-            DB_STRING = os.environ["SR_DB_STRING"]
-            logging.info("connect to remote db")
+        DB_STRING = os.getenv('SR_DB_STRING', local_db_connecton_string)
+        if DB_STRING!=local_db_connecton_string:
             self._client = MongoClient(DB_STRING, tlsCAFile=certifi.where())
             self._db = self._client[db_name]
-        # default local connection,  env varialbe SR_DB_STRING is empty   
-        except KeyError as e:
-            logging.info("connect to local db")
+        else:
+            # default local connection,  env varialbe SR_DB_STRING is empty  
             self._client = MongoClient(db_ip, db_port)
-            self._db = self._client[db_name]
-        except Exception as e:
-            logging.error(e)
-            import sys
-            sys.exit("DB init error")
-            
+            self._db = self._client[db_name]           
 
 
     def check_connection(self) -> bool:
