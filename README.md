@@ -12,9 +12,9 @@ Telegram Bot which notify every day about lesson schedule.
 * Jira task board: https://schedulebot.atlassian.net/jira/software/projects/SR/boards/1
 * Confluence: https://schedulebot.atlassian.net/wiki/spaces/~799618195/pages/33109/Home
 
-### How to setup environment 
+### How to set up environment 
 
-Lunux:
+Linux:
 
     python3 -m venv env
     source env/bin/activate
